@@ -16,7 +16,5 @@ class MainActivity : AppCompatActivity() {
                     .replace(R.id.container, MainFragment())
                     .commitNow()
         }
-
-        Firebase.database.setPersistenceEnabled(true)
     }
 }
