@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "860843407941",
+    "firebase_url": "https://ostranna-flasks-default-rtdb.europe-west1.firebasedatabase.app",
     "project_id": "ostranna-flasks",
     "storage_bucket": "ostranna-flasks.appspot.com"
   },
