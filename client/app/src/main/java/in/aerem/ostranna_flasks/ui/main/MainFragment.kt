@@ -1,15 +1,17 @@
 package `in`.aerem.ostranna_flasks.ui.main
 
-import androidx.lifecycle.ViewModelProvider
+import `in`.aerem.ostranna_flasks.R
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import `in`.aerem.ostranna_flasks.R
-import android.util.Log
 import android.widget.ArrayAdapter
-import android.widget.Spinner
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -20,7 +22,7 @@ import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.android.synthetic.main.fragment_main.*
-import java.lang.Exception
+
 
 data class Professor(
     val name: String = "",
@@ -123,6 +125,21 @@ class MainFragment : Fragment() {
     }
 
     private fun givePoints(professor: String, department: String, amount: Int) {
-        database.getReference("actions").push().setValue(ActionEntry(professor, department, amount, System.currentTimeMillis()))
+        AlertDialog.Builder(requireContext())
+            .setTitle("Подтвердите начисление")
+            .setMessage("$professor начисляет факультету $department $amount баллов. Подтверждаете?")
+            .setPositiveButton("Ок"
+            ) { _, _ ->
+                database.getReference("actions").push().setValue(
+                    ActionEntry(
+                        professor,
+                        department,
+                        amount,
+                        System.currentTimeMillis()
+                    )
+                )
+            }
+            .setNegativeButton("Отмена", null).show()
+
     }
 }
