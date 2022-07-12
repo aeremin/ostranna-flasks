@@ -27,6 +27,13 @@ data class Professor(
     val limit: Int = 0,
 )
 
+data class ActionEntry(
+    val professor: String,
+    val department: String,
+    val amount: Int,
+    val timestamp: Long
+)
+
 class MainFragment : Fragment() {
     companion object {
         private const val TAG = "MainFragment"
@@ -61,6 +68,7 @@ class MainFragment : Fragment() {
 
         populateDepartments()
         subscribeToProfessorsChanges()
+        setUpButtons()
     }
 
     private fun subscribeToProfessorsChanges() {
@@ -102,4 +110,19 @@ class MainFragment : Fragment() {
         )
     }
 
+    private fun setUpButtons() {
+        button_add.setOnClickListener { givePoints(
+            professors_dropdown.selectedItem as String,
+            department_dropdown.selectedItem as String,
+            Integer.valueOf(points_amount.text.toString())) }
+
+        button_substract.setOnClickListener { givePoints(
+            professors_dropdown.selectedItem as String,
+            department_dropdown.selectedItem as String,
+            -Integer.valueOf(points_amount.text.toString())) }
+    }
+
+    private fun givePoints(professor: String, department: String, amount: Int) {
+        database.getReference("actions").push().setValue(ActionEntry(professor, department, amount, System.currentTimeMillis()))
+    }
 }
