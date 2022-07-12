@@ -29,4 +29,6 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
 
     implementation("com.google.firebase:firebase-admin:9.0.0")
+
+    implementation("com.fazecast:jSerialComm:2.9.2")
 }
