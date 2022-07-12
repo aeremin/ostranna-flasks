@@ -17,4 +17,4 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x ./server/gradlew
       - name: Build with Gradle
-        run: ./server/gradlew distZip
+        run: cd server && ./gradlew distZip
