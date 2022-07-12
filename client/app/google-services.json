@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "860843407941",
+    "project_id": "ostranna-flasks",
+    "storage_bucket": "ostranna-flasks.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:860843407941:android:3398a42f82d341ccddc12c",
+        "android_client_info": {
+          "package_name": "in.aerem.ostranna_flasks"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "860843407941-fgchsgress57497g4469alhu4p1sqbfe.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDauRm8yHqDOEt1vbuzSUcCx5hi1nLGfvE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "860843407941-fgchsgress57497g4469alhu4p1sqbfe.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
