@@ -9,6 +9,8 @@ import io.ktor.server.request.*
 fun Application.configureRouting() {
 
     routing {
+        // TODO: add a route to get an html page with a list of actions
+        
         get("/") {
             call.respondText("Hello World!")
         }
