@@ -87,7 +87,7 @@ class MainFragment : Fragment() {
                     }
                     professors_dropdown.adapter = ArrayAdapter(
                         requireContext(),
-                        android.R.layout.simple_spinner_item, professorNames
+                        R.layout.bigger_spinner, professorNames
                     )
                 } catch (e: DatabaseException) {
                     // This is fine, probably DB is temporarily "broken", i.e. has an incomplete
@@ -104,7 +104,7 @@ class MainFragment : Fragment() {
     private fun populateDepartments() {
         department_dropdown.adapter = ArrayAdapter(
             requireContext(),
-            android.R.layout.simple_spinner_item,
+            R.layout.bigger_spinner,
             arrayListOf("Гриффиндор", "Слизерин", "Когтевран", "Пуффендуй")
         )
     }
