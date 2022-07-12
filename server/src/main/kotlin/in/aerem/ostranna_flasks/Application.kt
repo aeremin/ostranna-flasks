@@ -52,12 +52,8 @@ fun main() {
                 if (snapshot == null) return
                 val totals = mutableMapOf<String, Int>().withDefault { 0 }
                 for (children in snapshot.children) {
-                    try {
-                        val entry = children.getValue(ActionEntry::class.java)
-                        totals[entry.department] = totals.getValue(entry.department) + entry.amount
-                    } catch (e: Exception) {
-                        println(e)
-                    }
+                    val entry = children.getValue(ActionEntry::class.java)
+                    totals[entry.department] = totals.getValue(entry.department) + entry.amount
                 }
                 val command = "Set ${totals.getValue("Гриффиндор")}, ${totals.getValue("Слизерин")}, ${totals.getValue("Когтевран")}, ${totals.getValue("Пуффендуй")}\n"
                 println(command)
