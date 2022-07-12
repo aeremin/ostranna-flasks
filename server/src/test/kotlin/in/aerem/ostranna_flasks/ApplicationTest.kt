@@ -1,4 +1,4 @@
-package in.aerem.ostranna_flasks
+package `in`.aerem.ostranna_flasks
 
 import io.ktor.server.routing.*
 import io.ktor.http.*
@@ -9,7 +9,7 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import kotlin.test.*
 import io.ktor.server.testing.*
-import in .aerem.ostranna_flasks.plugins.*
+import `in`.aerem.ostranna_flasks.plugins.*
 
 class ApplicationTest {
     @Test
