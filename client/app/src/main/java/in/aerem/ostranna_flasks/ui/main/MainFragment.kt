@@ -8,14 +8,19 @@ import android.view.View
 import android.view.ViewGroup
 import `in`.aerem.ostranna_flasks.R
 import android.util.Log
+import android.widget.ArrayAdapter
+import android.widget.Spinner
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseException
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
+import kotlinx.android.synthetic.main.fragment_main.*
+import java.lang.Exception
 
 data class Professor(
     val name: String = "",
@@ -43,6 +48,7 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
             if (!task.isSuccessful) {
                 Log.w(TAG, "Fetching FCM registration token failed", task.exception)
@@ -53,22 +59,47 @@ class MainFragment : Fragment() {
             database.getReference("devices/$token").setValue("Connected!")
         })
 
+        populateDepartments()
+        subscribeToProfessorsChanges()
+    }
 
-        val postListener = object : ValueEventListener {
+    private fun subscribeToProfessorsChanges() {
+        database.getReference("professors").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val professors = dataSnapshot.getValue<Map<String, Professor>>()
-                if (professors != null) {
-                    for (professor in professors) {
-                        Log.i(TAG, "Professor ${professor.value.name} (id: ${professor.key}) has limit of ${professor.value.limit}")
+                try {
+                    val professors = dataSnapshot.getValue<Map<String, Professor>>()
+                    val professorNames = arrayListOf<String>()
+                    if (professors != null) {
+                        for (professor in professors) {
+                            Log.i(
+                                TAG,
+                                "Professor ${professor.value.name} (id: ${professor.key}) has limit of ${professor.value.limit}"
+                            )
+                            professorNames.add(professor.value.name)
+                        }
                     }
+                    professors_dropdown.adapter = ArrayAdapter(
+                        requireContext(),
+                        android.R.layout.simple_spinner_item, professorNames
+                    )
+                } catch (e: DatabaseException) {
+                    // This is fine, probably DB is temporarily "broken", i.e. has an incomplete
+                    // document
                 }
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
                 Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
             }
-        }
-        database.getReference("professors").addValueEventListener(postListener)
+        })
+    }
+
+    private fun populateDepartments() {
+        department_dropdown.adapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_item,
+            arrayListOf("Гриффиндор", "Слизерин", "Когтевран", "Пуффендуй")
+        )
     }
 
 }
