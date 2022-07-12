@@ -10,7 +10,7 @@ plugins {
 group = "in.aerem.ostranna_flasks"
 version = "0.0.1"
 application {
-    mainClass.set("in.aerem.ostranna_flasks.ApplicationKt")
+    mainClass.set("in.aerem.ostranna_flasks.MainKt")
 
     val isDevelopment: Boolean = project.ext.has("development")
     applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")
