@@ -2,14 +2,12 @@ package `in`.aerem.ostranna_flasks.ui.main
 
 import `in`.aerem.ostranna_flasks.R
 import android.app.AlertDialog
-import android.content.DialogInterface
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.tasks.OnCompleteListener
@@ -33,7 +31,8 @@ data class ActionEntry(
     val professor: String,
     val department: String,
     val amount: Int,
-    val timestamp: Long
+    val timestamp: Long,
+    val token: String?
 )
 
 class MainFragment : Fragment() {
@@ -43,6 +42,7 @@ class MainFragment : Fragment() {
 
     private lateinit var viewModel: MainViewModel
     private val database = Firebase.database
+    private var token: String? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
@@ -59,13 +59,10 @@ class MainFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
-            if (!task.isSuccessful) {
-                Log.w(TAG, "Fetching FCM registration token failed", task.exception)
-                return@OnCompleteListener
+            if (task.isSuccessful) {
+                token = task.result
+                database.getReference("devices/$token").setValue("Connected!")
             }
-            val token = task.result
-            Log.i(TAG, "Fetched a messaging token: $token")
-            database.getReference("devices/$token").setValue("Connected!")
         })
 
         populateDepartments()
@@ -135,7 +132,8 @@ class MainFragment : Fragment() {
                         professor,
                         department,
                         amount,
-                        System.currentTimeMillis()
+                        System.currentTimeMillis(),
+                        token
                     )
                 )
             }
