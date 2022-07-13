@@ -1,14 +1,12 @@
 package `in`.aerem.ostranna_flasks
 
-import com.fazecast.jSerialComm.SerialPort
-import com.fazecast.jSerialComm.SerialPortDataListener
-import com.fazecast.jSerialComm.SerialPortEvent
 import com.google.auth.oauth2.GoogleCredentials
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
 import com.google.firebase.database.*
 import io.ktor.util.logging.*
 import java.io.FileInputStream
+import `in`.aerem.ostranna_flasks.ComPort.*
 
 data class ActionEntry(
     val professor: String = "",
@@ -19,12 +17,12 @@ data class ActionEntry(
 )
 
 class OstrannaFlasksApplication {
-    private val comport: SerialPort
+    private val comport: ComPort
     private val log: Logger
 
     constructor(log: Logger, comPortName: String) {
         this.log = log
-        this.comport = openComport(comPortName)
+        this.comport = openComport(log, comPortName)
 
         val options = FirebaseOptions.builder()
             .setCredentials(GoogleCredentials.fromStream(FileInputStream("ostranna-flasks-account-key.json")))
@@ -48,29 +46,6 @@ class OstrannaFlasksApplication {
         })
     }
 
-    private fun openComport(comPortName: String): SerialPort {
-        val comport = SerialPort.getCommPort(comPortName)
-        comport.baudRate = 115200
-        comport.numStopBits = SerialPort.ONE_STOP_BIT
-        if (!comport.openPort()) {
-            throw Exception("Can't connect to serial device at $comPortName, devices available: ${SerialPort.getCommPorts().joinToString { it.systemPortName }}")
-        }
-        if (!comport.addDataListener(object: SerialPortDataListener {
-            override fun getListeningEvents(): Int {
-                return SerialPort.LISTENING_EVENT_DATA_RECEIVED
-            }
-
-            override fun serialEvent(event: SerialPortEvent?) {
-                if (event == null) return
-                log.info("Received from COM port: ${String(event.receivedData).trim()}")
-            }
-        })) {
-            throw Exception("Failed to start listening at $comPortName")
-        }
-        log.info("Successfully connected to $comPortName, listening to data")
-        return comport
-    }
-
     private fun onNewActionsSnapshot(snapshot: DataSnapshot) {
         val totals = mutableMapOf<String, Int>().withDefault { 0 }
         // TODO: support daily limits
@@ -80,7 +55,11 @@ class OstrannaFlasksApplication {
         }
         val command = "Set ${totals.getValue("Гриффиндор")}, ${totals.getValue("Слизерин")}, ${totals.getValue("Когтевран")}, ${totals.getValue("Пуффендуй")}\n"
         log.info("Writing to COM port: ${command.trim()}")
-        comport.writeBytes(command.toByteArray(), command.length.toLong())
+        try {
+          comport.write(command)
+        } catch (e: Exception) {
+          log.error("Failed to write to com port: ${e.message}")
+        }
     }
 }
 
