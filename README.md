@@ -1,3 +1,7 @@
+[![Build status](https://build.appcenter.ms/v0.1/apps/05ef055d-a842-4628-bce1-1608ad4af9c2/branches/main/badge)](https://appcenter.ms)
+[![Build Android](https://github.com/aeremin/ostranna-flasks/actions/workflows/build_android.yml/badge.svg)](https://github.com/aeremin/ostranna-flasks/actions/workflows/build_android.yml)
+[![Build server](https://github.com/aeremin/ostranna-flasks/actions/workflows/build_server.yml/badge.svg)](https://github.com/aeremin/ostranna-flasks/actions/workflows/build_server.yml)
+
 # Остранна-Колбы
 
 Софт для управления [магическими колбами Остранны](https://ostranna.ru/magic/hogwartsflasks/).
@@ -14,8 +18,9 @@
 
 Для запуска нужна установленная Java (JRE). На многих машинах она уже установлена.
 
-Чтоб скачать свежую версию - идем [сюда](https://github.com/aeremin/ostranna-flasks/actions/workflows/build_server.yml),
-выбираем последний успешный (с зеленой галочкой билд), жмем на ссылку, в разделе Artifacts скачиваем server.
+Чтоб скачать свежую версию приложения - идем 
+[сюда](https://github.com/aeremin/ostranna-flasks/actions/workflows/build_server.yml),
+выбираем последний успешный (с зеленой галочкой) билд, жмем на ссылку, в разделе Artifacts скачиваем server.
 Полученный архив нужно распаковать куда-то не очень глубоко на диске (могут быть проблемы с длинными путями).
 
 Для авторизации в облачной БД так же нужен ключ-файл. Идем [сюда](https://console.firebase.google.com/u/0/project/ostranna-flasks/settings/serviceaccounts/adminsdk),
@@ -34,3 +39,18 @@ server.bat COM4
 * Использование заглушки вместо реального общения по COM-порту - значение `stub`.
 
 В случае неправильного использования - см. вывод, скорее всего там будет информация о проблеме.
+
+### Облачная база данных
+
+[Здесь](https://console.firebase.google.com/u/0/project/ostranna-flasks/database/ostranna-flasks-default-rtdb/data) можно
+посмотреть (и при необходимости - подредактировать, но аккуратно) состояние базы данных.
+
+Разделы:
+* [professors](https://console.firebase.google.com/u/0/project/ostranna-flasks/database/ostranna-flasks-default-rtdb/data/~2Fprofessors):
+  тут можно добавлять новых преподавателей/других персонажей с правом начислять баллы и указывать их дневной лимит. 
+  Записи должны иметь поля `name` и `limit`. После редактирования - нужно проверить в мобильном приложении, что список
+  синхронизировался. Если формат данных в БД неправильный - синхронизироваться не будет.
+* [actions](https://console.firebase.google.com/u/0/project/ostranna-flasks/database/ostranna-flasks-default-rtdb/data/~2Factions):
+  все операции снятия/начисления баллов. Новые записи тут создавать не стоит, подправить что-то в старых потенциально
+  можно.
+
