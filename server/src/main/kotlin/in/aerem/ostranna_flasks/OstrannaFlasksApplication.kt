@@ -19,11 +19,12 @@ data class ActionEntry(
 )
 
 class OstrannaFlasksApplication {
-    private val comport = openComport()
+    private val comport: SerialPort
     private val log: Logger
 
-    constructor(log: Logger) {
+    constructor(log: Logger, comPortName: String) {
         this.log = log
+        this.comport = openComport(comPortName)
 
         val options = FirebaseOptions.builder()
             .setCredentials(GoogleCredentials.fromStream(FileInputStream("ostranna-flasks-account-key.json")))
@@ -47,12 +48,14 @@ class OstrannaFlasksApplication {
         })
     }
 
-    private fun openComport(): SerialPort {
-        val comport = SerialPort.getCommPort("COM4")
+    private fun openComport(comPortName: String): SerialPort {
+        val comport = SerialPort.getCommPort(comPortName)
         comport.baudRate = 115200
         comport.numStopBits = SerialPort.ONE_STOP_BIT
-        comport.openPort()
-        comport.addDataListener(object: SerialPortDataListener {
+        if (!comport.openPort()) {
+            throw Exception("Can't connect to serial device at $comPortName, devices available: ${SerialPort.getCommPorts().joinToString { it.systemPortName }}")
+        }
+        if (!comport.addDataListener(object: SerialPortDataListener {
             override fun getListeningEvents(): Int {
                 return SerialPort.LISTENING_EVENT_DATA_RECEIVED
             }
@@ -61,7 +64,10 @@ class OstrannaFlasksApplication {
                 if (event == null) return
                 log.info("Received from COM port: ${String(event.receivedData).trim()}")
             }
-        })
+        })) {
+            throw Exception("Failed to start listening at $comPortName")
+        }
+        log.info("Successfully connected to $comPortName, listening to data")
         return comport
     }
 
