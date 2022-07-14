@@ -29,6 +29,7 @@ class OstrannaFlasksApplication {
     private val database: DatabaseReference
     private val dailyLimits = mutableMapOf<String, Int>().withDefault { 0 }
     private var subscribedToActions = false
+    private var actions = listOf<ActionEntry>()
 
     constructor(log: Logger, comPortName: String) {
         this.log = log
@@ -45,6 +46,10 @@ class OstrannaFlasksApplication {
 
     fun subscribeToFirebaseDatabase() {
         subscribeToProfessors()
+    }
+
+    fun getActions(): List<ActionEntry> {
+        return actions
     }
 
     private fun subscribeToActionsIfNeeded() {
@@ -89,8 +94,7 @@ class OstrannaFlasksApplication {
             val totals = mutableMapOf<String, Int>().withDefault { 0 }
             val totalAddedPerProfessor = mutableMapOf<String, Int>().withDefault { 0 }
             val totalRemovedPerProfessor = mutableMapOf<String, Int>().withDefault { 0 }
-            val actions =
-                snapshot.children.toList().map { it.getValue(ActionEntry::class.java) }.sortedBy { it.timestamp }
+            actions = snapshot.children.toList().map { it.getValue(ActionEntry::class.java) }.sortedBy { it.timestamp }
             val today = Calendar.getInstance()
             val exceededLimitTokens = mutableSetOf<String>()
 

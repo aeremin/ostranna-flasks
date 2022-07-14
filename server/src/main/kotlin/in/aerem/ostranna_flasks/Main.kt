@@ -9,8 +9,8 @@ fun main(args: Array<String>) {
     if (args.size != 1) throw Exception("Please provide exactly one command-line argument - com-port device")
 
     embeddedServer(Netty, port = 8080, host = "0.0.0.0") {
-        configureRouting()
         val app = OstrannaFlasksApplication(log, args[0])
         app.subscribeToFirebaseDatabase()
+        configureRouting(app)
     }.start(wait = true)
 }

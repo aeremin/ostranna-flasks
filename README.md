@@ -40,6 +40,8 @@ server.bat COM4
 
 В случае неправильного использования - см. вывод, скорее всего там будет информация о проблеме.
 
+После запуска по адресу http://localhost:8080/ будет доступна страница с историей всех начислений.
+
 ### Облачная база данных
 
 [Здесь](https://console.firebase.google.com/u/0/project/ostranna-flasks/database/ostranna-flasks-default-rtdb/data) можно
